@@ -5,7 +5,6 @@ const commonConfig = require('./webpack.common.js')
 const devConfig =  {
 	mode: 'development', 
 	devtool: 'cheap-module-eval-source-map',
-
 	devServer: {
 		contentBase: './dist',
 		open: true,

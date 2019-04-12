@@ -25,7 +25,11 @@ module.exports = {
 		{
 			test: /\.(eot|ttf|svg|woff)$/,
 			use: {
-				loader: 'file-loader'
+				loader: 'file-loader',
+				options: {
+					name: '[name]_[hash].[ext]',
+					outputPath: 'font/'
+				}
 			}
 		},
 		{
@@ -59,8 +63,28 @@ module.exports = {
 	}),
 	new CleanWebpackPlugin(),
 	],
+	optimization: {
+		splitChunks: {
+			chunks: 'all',
+			minSize: 30000,
+			maxSize: 0,
+			minChunks: 1,
+			maxAsyncRequests: 5,
+			maxInitialRequests: 3,
+			automaticNameDelimiter: '~',
+			name: true,
+			cacheGroups: {
+				// 同步引入
+				vendors: {
+					test: /[\\/]node_modules[\\/]/, // 把node_modules的文件打包到vendors.js中
+					priority: -10
+				},
+				default: false
+			}
+		}
+	},
 	output: {
 		filename: '[name].js',
-		path: path.resolve(__dirname, 'dist')
+		path: path.resolve(__dirname, '../dist')
 	}
 }

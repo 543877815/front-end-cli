@@ -41,6 +41,22 @@ import { add } from './js/script.js'
 add(1,2);
 
 // code spliting test
-import _ from 'lodash'
-console.log(_.join(['a', 'b', 'c'], '***'));
-console.log(_.join(['a', 'b', 'c'], '***'));
+// synchronization 
+// dist/vendors~main.js
+// import _ from 'lodash'
+// console.log(_.join(['a', 'b', 'c'], '***'));
+// console.log(_.join(['a', 'b', 'c'], '***'));
+
+// code spliting test
+// asynchronization needn't config
+// SplitChunksPlugin test
+function getComponent(){
+	return import(/* webpackChunkName:"lodash" */'lodash').then(({default: _})=>{
+		var element = document.createElement('div');
+		element.innerHTML = _.join(['Dell', 'Lee'], '-');
+		return element
+	})
+}
+getComponent().then(element=>{
+	document.body.appendChild(element);
+})
