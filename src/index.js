@@ -24,3 +24,12 @@ import './font/iconfont.css'
 var fontTest = document.createElement('div');
 fontTest.innerHTML = '<div class="iconfont iconicon-1"></div>';
 main.append(fontTest);
+
+// devserver test
+console.log('ddd');
+
+// babel test
+const a = 1
+
+// polyfill test
+var x = new Promise()
