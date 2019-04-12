@@ -1,33 +1,15 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-const webpack = require('webpack')
 
 module.exports = {
-	mode:'development', //default production to compression
-	devtool: 'cheap-module-eval-source-map',
-	// mode:'production',
-	// devtool: 'cheap-module-source-map',
 	entry: './src/index.js',
-	devServer: {
-		contentBase: './dist',
-		open: true,
-		port: 8080,
-		hot: true,
-		hotOnly: true,
-		proxy: {
-			'/api': {
-				target: 'http://localhost:3000',
-				pathRewrite: {'^/api' : ''}
-			}
-		}
-	},
 	module: {
 		rules: [
 		{ 
 			test: /\.js$/, 
 			exclude: /node_modules/, 
-			loader: "babel-loader" 
+			loader: "babel-loader"
 		},
 		{
 			test: /\.(png|jpg|gif)$/,
@@ -61,7 +43,7 @@ module.exports = {
 			{
 				loader: 'css-loader',
 				options: {
-					importLoaders: 2, 	// 0 => no loaders (default); 1 => postcss-loader; 2 => postcss-loader, sass-loader
+					importLoaders: 2, 	
 					modules: true
 				},
 			},
@@ -76,11 +58,7 @@ module.exports = {
 		template: 'src/html/index.html'
 	}),
 	new CleanWebpackPlugin(),
-	new webpack.HotModuleReplacementPlugin()
 	],
-	optimization: {
-		usedExports: true
-	},
 	output: {
 		filename: '[name].js',
 		path: path.resolve(__dirname, 'dist')

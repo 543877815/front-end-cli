@@ -11,11 +11,13 @@ main.append(img);
 
 // css test
 import CSSstyle from './css/style.css'
+
 // module test
 img.classList.add(CSSstyle.avatar)
 
 // scss test
 import SCSSstyle from './scss/style.scss'
+
 // module test
 img.classList.add(SCSSstyle.avatar)
 
@@ -32,4 +34,13 @@ console.log('ddd');
 const a = 1
 
 // polyfill test
-var x = new Promise()
+var x = new Promise(function(){})
+
+// tree shaking test
+import { add } from './js/script.js'
+add(1,2);
+
+// code spliting test
+import _ from 'lodash'
+console.log(_.join(['a', 'b', 'c'], '***'));
+console.log(_.join(['a', 'b', 'c'], '***'));
