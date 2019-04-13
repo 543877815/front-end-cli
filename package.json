@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "webpack-dev-server --config ./build/webpack.dev.js",
     "build": "webpack --config ./build/webpack.prod.js",
+    "fix": "eslint --fix src",
     "analyse": "webpack --profile --json > stats.json --config ./build/webpack.dev.js"
   },
   "author": "",
@@ -18,9 +19,11 @@
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-env": "^7.4.3",
     "autoprefixer": "^9.5.1",
+    "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
     "clean-webpack-plugin": "^2.0.1",
     "css-loader": "^2.1.1",
+    "eslint": "^5.16.0",
     "html-webpack-plugin": "^3.2.0",
     "http-server": "^0.11.1",
     "jquery": "^3.4.0",
@@ -40,6 +43,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.4.3",
     "core-js": "^2.6.5",
+    "eslint-loader": "^2.1.2",
     "file-loader": "^3.0.1",
     "url-loader": "^1.1.2",
     "workbox-webpack-plugin": "^4.2.0"

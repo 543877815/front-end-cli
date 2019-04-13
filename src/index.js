@@ -57,12 +57,13 @@ console.log($(document));
 // 		return element
 // 	})
 // }
-async function getComponent(){
-	const { default : _} = await import(/* webpackChunkName:"lodash" */'lodash') 
-	var element = document.createElement('div');
-	element.innerHTML = _.join(['Dell', 'Lee'], '-');
-	return element
-}
+// async function getComponent(){
+// 	 /* eslint-disable no-new */
+// 	const { default : _} = await import( webpackChunkName:"lodash" 'lodash') 
+// 	var element = document.createElement('div');
+// 	element.innerHTML = _.join(['Dell', 'Lee'], '-');
+// 	return element
+// }
 getComponent().then(element=>{
 	document.body.appendChild(element);
 })

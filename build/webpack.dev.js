@@ -1,3 +1,4 @@
+const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const commonConfig = require('./webpack.common.js')
@@ -34,17 +35,24 @@ const devConfig =  {
 	},
 	devServer: {
 		contentBase: './dist',
+		overlay: true,
 		open: true,
 		port: 8080,
 		hot: true,
 		proxy: {
 			'/api': {
 				target: 'http://localhost:3000',
-				pathRewrite: {'^/api' : ''}
+				pathRewrite: {'^/api' : ''},
+				secure: false,
+				bypass: function(req, res, proxyOptions) {
+					if (req.headers.accept.indexOf('html') !== -1) {
+						console.log('Skipping proxy for browser request.');
+						return '/index.html';
+					}
+				},
 			}
-		}
+		},
 	},
-
 	plugins: [
 	new webpack.HotModuleReplacementPlugin()
 	],
