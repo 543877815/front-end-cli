@@ -1,7 +1,0 @@
-@import url('./Loadloader.css');
-.avatar{
-	/* postcss test */
-	transform: translate3d(0,0,20px);
-	border: 10px solid black;
-}
-
