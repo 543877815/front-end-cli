@@ -1,14 +1,3 @@
----
-bashtitle: 构建自己的front-end-cli
-date: 2019-04-10 21:32:27
-categories: 
-- front-end
-tags: 
-- webpack
-- npm 
-- node
----
-
 # front-end-cli配置日志
 可以看[我的博客](https://543877815.github.io/2019/04/10/%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84front-end-cli/)
 
