@@ -43,20 +43,47 @@ add(1,2);
 // code spliting test
 // synchronization 
 // dist/vendors~main.js
-// import _ from 'lodash'
-// console.log(_.join(['a', 'b', 'c'], '***'));
-// console.log(_.join(['a', 'b', 'c'], '***'));
+import $ from 'jquery'
+console.log($(document));
 
 // code spliting test
 // asynchronization needn't config
 // SplitChunksPlugin test
-function getComponent(){
-	return import(/* webpackChunkName:"lodash" */'lodash').then(({default: _})=>{
-		var element = document.createElement('div');
-		element.innerHTML = _.join(['Dell', 'Lee'], '-');
-		return element
-	})
+
+// function getComponent(){
+// 	return import(/* webpackChunkName:"lodash" */'lodash').then(({default: _})=>{
+// 		var element = document.createElement('div');
+// 		element.innerHTML = _.join(['Dell', 'Lee'], '-');
+// 		return element
+// 	})
+// }
+async function getComponent(){
+	const { default : _} = await import(/* webpackChunkName:"lodash" */'lodash') 
+	var element = document.createElement('div');
+	element.innerHTML = _.join(['Dell', 'Lee'], '-');
+	return element
 }
 getComponent().then(element=>{
 	document.body.appendChild(element);
 })
+
+
+// webpackPrefetch test
+document.addEventListener('click', () => {
+	import(/* webpackPrefetch: true*/ './js/click.js').then(({default: func})=>{
+		func();
+	})
+})
+
+// service-worker test
+console.log('service-worker test');
+if ('serviceWorker' in navigator){
+	window.addEventListener('load', () =>{
+		navigator.serviceWorker.register('/service-worker.js')
+		.then(registration=>{
+			console.log('service-worker registed');
+		}).catch(error=>{
+			console.log('service-worker register error');
+		})
+	})
+}

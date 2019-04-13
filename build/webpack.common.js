@@ -31,29 +31,6 @@ module.exports = {
 					outputPath: 'font/'
 				}
 			}
-		},
-		{
-			test: /\.css$/,
-			use: [
-			'style-loader', 
-			'css-loader',
-			'postcss-loader'
-			]
-		},
-		{
-			test: /\.scss$/,
-			use: [
-			'style-loader', 
-			{
-				loader: 'css-loader',
-				options: {
-					importLoaders: 2, 	
-					modules: true
-				},
-			},
-			'postcss-loader',
-			'sass-loader'
-			]
 		}
 		]
 	},
@@ -64,10 +41,14 @@ module.exports = {
 	new CleanWebpackPlugin(),
 	],
 	optimization: {
+		usedExports: true,
+		runtimeChunk: {
+			name: 'runtime'
+		},
 		splitChunks: {
 			chunks: 'all',
-			minSize: 30000,
-			maxSize: 0,
+			// delete
+			minSize: 30000,  // 代码分割最小大小
 			minChunks: 1,
 			maxAsyncRequests: 5,
 			maxInitialRequests: 3,
@@ -77,14 +58,15 @@ module.exports = {
 				// 同步引入
 				vendors: {
 					test: /[\\/]node_modules[\\/]/, // 把node_modules的文件打包到vendors.js中
-					priority: -10
+					priority: -10,
 				},
-				default: false
+				default: {
+					priority: -20,
+					reuseExistingChunk: true,
+					filename: 'common.js'
+				}
 			}
 		}
 	},
-	output: {
-		filename: '[name].js',
-		path: path.resolve(__dirname, '../dist')
-	}
+
 }
