@@ -10,8 +10,10 @@
     "dev": "webpack-dev-server --config ./build/webpack.dev.js",
     "build": "webpack --config ./build/webpack.prod.js",
     "lint-fix": "eslint --ext .js --fix src",
+    "lint": "eslint --ext .js src",
     "analyse": "webpack --profile --json > stats.json --config ./build/webpack.dev.js"
   },
+  "eslintIgnore":[],
   "author": "",
   "license": "ISC",
   "devDependencies": {
