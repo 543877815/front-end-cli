@@ -1,50 +1,53 @@
 // js test
-var scriptJS = require('./js/script.js');
+let scriptJS = require("./js/script.js")
+console.log(scriptJS)
 
 // img test
-var testImage = require('./img/test.jpg')
-var img = new Image();
-img.src = testImage;
-img.classList.add('avatar');
-var main = document.getElementById('main');
-main.append(img);
+let testImage = require("./img/test.jpg")
+let img = new Image()
+img.src = testImage
+img.classList.add("avatar")
+let main = document.getElementById("main")
+main.append(img)
 
 // css test
-import CSSstyle from './css/style.css'
+import CSSstyle from "./css/style.css"
 
 // module test
 img.classList.add(CSSstyle.avatar)
 
 // scss test
-import SCSSstyle from './scss/style.scss'
+import SCSSstyle from "./scss/style.scss"
 
 // module test
 img.classList.add(SCSSstyle.avatar)
 
 // font test
-import './font/iconfont.css'
-var fontTest = document.createElement('div');
-fontTest.innerHTML = '<div class="iconfont iconicon-1"></div>';
-main.append(fontTest);
+import "./font/iconfont.css"
+let fontTest = document.createElement("div")
+fontTest.innerHTML = "<div class=\"iconfont iconicon-1\"></div>"
+main.append(fontTest)
 
 // devserver test
-console.log('ddd');
+console.log("ddd")
 
 // babel test
 const a = 1
+console.log(a)
 
 // polyfill test
-var x = new Promise(function(){})
+let x = new Promise(function(){})
+console.log(x)
 
 // tree shaking test
-import { add } from './js/script.js'
-add(1,2);
+import { add } from "./js/script.js"
+add(1, 2)
 
 // code spliting test
 // synchronization 
 // dist/vendors~main.js
-import $ from 'jquery'
-console.log($(document));
+import $ from "jquery"
+console.log($(document))
 
 // code spliting test
 // asynchronization needn't config
@@ -57,34 +60,33 @@ console.log($(document));
 // 		return element
 // 	})
 // }
-// async function getComponent(){
-// 	 /* eslint-disable no-new */
-// 	const { default : _} = await import( webpackChunkName:"lodash" 'lodash') 
-// 	var element = document.createElement('div');
-// 	element.innerHTML = _.join(['Dell', 'Lee'], '-');
-// 	return element
-// }
-getComponent().then(element=>{
-	document.body.appendChild(element);
+async function getComponent() {
+	const { default : _} = await import( /* webpackChunkName:"lodash"*/ "lodash") 
+	let element = document.createElement("div")
+	element.innerHTML = _.join(["Dell", "Lee"], "-")
+	return element
+}
+getComponent().then((element) => {
+	document.body.appendChild(element)
 })
 
 
 // webpackPrefetch test
-document.addEventListener('click', () => {
-	import(/* webpackPrefetch: true*/ './js/click.js').then(({default: func})=>{
-		func();
+document.addEventListener("click", () => {
+	import(/* webpackPrefetch: true*/ "./js/click.js").then(({default: func}) => {
+		func()
 	})
 })
 
 // service-worker test
-console.log('service-worker test');
-if ('serviceWorker' in navigator){
-	window.addEventListener('load', () =>{
-		navigator.serviceWorker.register('/service-worker.js')
-		.then(registration=>{
-			console.log('service-worker registed');
-		}).catch(error=>{
-			console.log('service-worker register error');
+console.log("service-worker test")
+if ("serviceWorker" in navigator){
+	window.addEventListener("load", () => {
+		navigator.serviceWorker.register("/service-worker.js")
+		.then(() => {
+			console.log("service-worker registed")
+		}).catch(() => {
+			console.log("service-worker register error")
 		})
 	})
 }
