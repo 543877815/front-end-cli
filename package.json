@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "webpack-dev-server --config ./build/webpack.dev.js",
     "build": "webpack --config ./build/webpack.prod.js",
-    "fix": "eslint --fix src",
+    "lint-fix": "eslint --ext .js --fix src",
     "analyse": "webpack --profile --json > stats.json --config ./build/webpack.dev.js"
   },
   "author": "",
