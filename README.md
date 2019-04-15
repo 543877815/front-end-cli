@@ -1,3 +1,18 @@
+## Install
+
+### npm
+```bash
+npm i lfj-front-end-cli --save-dev
+mv node_modules/lfj-front-end-cli/* ./
+rm -rf node_modules/lfj-front-end-cli
+```
+
+### git 
+```
+gits: git@github.com:543877815/front-end-cli.git
+https: https://github.com/543877815/front-end-cli.git
+```
+
 ## Build Setup
 
 ``` bash
