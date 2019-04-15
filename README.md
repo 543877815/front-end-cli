@@ -1,5 +1,3 @@
-# 配置说明
-
 ## Build Setup
 
 ``` bash
@@ -22,3 +20,4 @@ npm run lint
 npm run lint-fix
 ```
 
+# 配置说明
