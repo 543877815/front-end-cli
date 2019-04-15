@@ -90,3 +90,5 @@ if ("serviceWorker" in navigator){
 		})
 	})
 }
+
+var a = 1

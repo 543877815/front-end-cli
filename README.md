@@ -75,11 +75,11 @@ module.exports = {
 module.exports = {
 	mode:'development', // default 'production' for compression
 	entry: './src/index.js',
-    optimization: {
-        runtimeChunk: {
+	optimization: {
+	    runtimeChunk: {
 			name: 'runtime'  // 提取runtime
 		}
-    }
+	}
 	output: {
 		filename: '[name].[contenthash].js',
 		chunkFilename: '[name].[contenthash].chunk.js',
@@ -122,14 +122,14 @@ webpack.config.js
 module.exports = {
     module: {
         rules: [{
-                test: /\.(eot|ttf|svg|woff)$/,
-                use: {
-                    loader: 'file-loader',
-                    options: {
-                        name: '[name]_[hash].[ext]',
-                        outputPath: 'font/',
-					}
-                }
+            test: /\.(eot|ttf|svg|woff)$/,
+            use: {
+                loader: 'file-loader',
+                options: {
+                    name: '[name]_[hash].[ext]',
+                    outputPath: 'font/',
+				}
+            }
         }]
     }
 }
@@ -249,7 +249,8 @@ webpack.config.js
 ```js
 module.exports = {
     module: {
-        rules: [{
+        rules: [
+        {
             test: /\.scss$/,
             use: [
                 'style-loader', 
@@ -531,9 +532,7 @@ module.exports = {
 		hot: true,
 		hotOnly: true,
 	}
-    plugins: [
-	new webpack.HotModuleReplacementPlugin()
-	],
+    plugins: [new webpack.HotModuleReplacementPlugin()],
 }
 ```
 
@@ -552,13 +551,12 @@ npm install --save-dev babel-loader @babel/core
 ```js
 module.exports = {
     module: {
-      rules: [
+      	rules: [
         { 
             test: /\.js$/, 
             exclude: /node_modules/, 
             loader: "babel-loader" 
-        }
-      ]
+        }]
     }
 }
 ```
@@ -592,17 +590,17 @@ npm install @babel/preset-env --save-dev
 ```js
 module.exports = {
     module: {
-      rules: [
-        { 
-            test: /\.js$/, 
-            exclude: /node_modules/, 
-            loader: "babel-loader",
-            options: {
-				presets: ["@babel/preset-env"]
-			}
-        }
-      ]
-    }
+      	rules: [
+	        { 
+	            test: /\.js$/, 
+	            exclude: /node_modules/, 
+	            loader: "babel-loader",
+	            options: {
+					presets: ["@babel/preset-env"]
+				}
+	        }
+	    ]
+	}
 }
 ```
 
@@ -647,8 +645,7 @@ module.exports = {
 					useBuiltIns: 'usage'
 				}]]
 			}
-        }
-      ]
+        }]
     }
 }
 ```
@@ -694,11 +691,9 @@ module.exports = {
                     "helpers": true,
                     "regenerator": true,
                     "useESModules": false
-                  }
-				]
+                }]
 			}
-        }
-      ]
+        }]
     }
 }
 ```
