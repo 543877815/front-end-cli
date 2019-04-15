@@ -69,7 +69,7 @@ module.exports = {
 }
 ```
 
-### publicPath
+### 浏览器缓存
 
 ```js
 module.exports = {
@@ -88,7 +88,7 @@ module.exports = {
 }
 ```
 
-### 浏览器缓存
+### publicPath
 ```js
 module.exports = {
 	mode:'development', // default 'production' for compression
@@ -100,7 +100,7 @@ module.exports = {
 	}
 }
 ```
-## loader(文件打包方案) 
+## loader
 
 ### file-loader
 
@@ -127,8 +127,8 @@ module.exports = {
                 loader: 'file-loader',
                 options: {
                     name: '[name]_[hash].[ext]',
-                    outputPath: 'font/',
-				}
+                    outputPath: 'font/'
+                }
             }
         }]
     }
@@ -260,13 +260,13 @@ module.exports = {
             ]
         },
         {
-			test: /\.css$/,
-			use: [
-			'style-loader', 
-			'css-loader',
-			'postcss-loader'
-			]
-		}]
+            test: /\.css$/,
+            use: [
+                'style-loader', 
+                'css-loader',
+                'postcss-loader'
+            ]
+        }]
     }
 }
 ```
@@ -340,6 +340,169 @@ module.exports = {
 }
 ```
 
+### babel-loader
+
+[Bebel](https://babeljs.io/setup#installation)是一个工具链，主要用于将ECMAScript 2015+代码转换为当前和旧版浏览器或环境中的向后兼容版本的JavaScript。以下是Babel可以为您做的主要事情：
+
+#### 安装
+
+```bash
+npm install --save-dev babel-loader @babel/core
+```
+
+#### 代码
+
+```js
+module.exports = {
+    module: {
+      	rules: [
+        { 
+            test: /\.js$/, 
+            exclude: /node_modules/, 
+            loader: "babel-loader" 
+        }]
+    }
+}
+```
+
+在项目目录下新建.babelrc，相当如babel中options的配置项
+
+##### preset-set
+
+##### 说明
+
+[preset-set](https://babeljs.io/docs/en/babel-preset-env)一个转化ES2015+的预设
+
+##### 安装
+
+```bash
+npm install @babel/preset-env --save-dev
+```
+
+##### 代码
+
+并在.babelrc下输入
+
+```js
+{
+  "presets": ["@babel/preset-env"]
+}
+```
+
+在webpack.config.js配置
+
+```js
+module.exports = {
+    module: {
+      	rules: [
+	        { 
+	            test: /\.js$/, 
+	            exclude: /node_modules/, 
+	            loader: "babel-loader",
+	            options: {
+					presets: ["@babel/preset-env"]
+				}
+	        }
+	    ]
+	}
+}
+```
+
+#### polyfill
+
+##### 说明
+
+[Polyfill](https://babeljs.io/docs/en/babel-polyfill)是一个`js`库，主要抚平不同浏览器之间对js实现的差异
+
+##### 安装
+
+```bash
+npm install --save @babel/polyfill
+```
+
+##### 使用
+
+在业务代码中进行引入
+
+```js
+import "@babel/polyfill";
+```
+
+##### 问题
+
+引入所有纠正由此带来代码臃肿
+
+##### 解决
+
+在webpack.config.js键入以下内容以根据业务代码加载
+
+```js
+module.exports = {
+    module: {
+        rules: [
+        { 
+            test: /\.js$/, 
+            exclude: /node_modules/, 
+            loader: "babel-loader",
+            options: {
+                presets: [
+                    ["@babel/preset-env",{
+                        useBuiltIns: 'usage'
+                    }]
+                ]
+			}
+        }]
+    }
+}
+```
+
+##### warning 及 解决
+
+WARNING: We noticed you're using the `useBuiltIns` option without declaring a core-js version. Currently, we assume version 2.x when no version is passed. Since this default version will likely change in future versions of Babel, we recommend explicitly setting the core-js version you are using via the `corejs` option.
+
+```bash
+npm install --save core-js@2
+```
+
+#### plugin-transform-runtime
+
+##### 说明
+
+[plugin-transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime)一个插件，可以重复使用Babel注入的帮助程序代码来节省代码
+
+用于写类库代码而不污染全局变量
+
+##### 安装
+
+```bash
+npm install --save-dev @babel/plugin-transform-runtime
+npm install --save @babel/runtime
+npm install --save @babel/runtime-corejs2
+```
+
+##### 使用
+
+```js
+module.exports = {
+    module: {
+      rules: [
+        { 
+            test: /\.js$/, 
+            exclude: /node_modules/, 
+            loader: "babel-loader",
+            options: {
+				plugins: [["@babel/plugin-transform-runtime"],{
+                    "corejs": 2,
+                    "helpers": true,
+                    "regenerator": true,
+                    "useESModules": false
+                }]
+			}
+        }]
+    }
+}
+```
+
 ## plugin 
 
 ### html-webpack-plugin
@@ -368,6 +531,118 @@ module.exports = {
 	})],
 }
 ```
+
+### MiniCssExtractPlugin
+
+#### 说明
+
+此插件将CSS提取到单独的文件中。它为每个包含CSS的JS文件创建一个CSS文件。它支持CSS和SourceMaps的按需加载。
+
+#### 安装
+
+```bash
+npm install --save-dev mini-css-extract-plugin
+```
+
+#### 使用
+
+```js
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+module.exports = {
+	module:{
+		rules: [
+		{
+			test: /\.css$/,
+			use: [
+			MiniCssExtractPlugin.loader,
+			'css-loader',
+			'postcss-loader'
+			]
+		},
+		{
+			test: /\.scss$/,
+			use: [
+			MiniCssExtractPlugin.loader,
+			{
+				loader: 'css-loader',
+				options: {
+					importLoaders: 2, 	
+					modules: true
+				},
+			},
+			'postcss-loader',
+			'sass-loader'
+			]
+		}
+		]
+	},
+	plugins: [
+	new MiniCssExtractPlugin({
+		filename: '[name].css',
+		chunkFilename: '[name].chunk.css'
+	})
+	]
+}
+```
+
+防止tree shaking
+
+package.json
+
+```json
+{
+  "sizeEffects": [
+    "*.css"
+  ],
+}
+```
+
+### workboxWebpackPlugin
+
+#### 说明
+
+[官方文档](https://developers.google.com/web/tools/workbox/modules/workbox-webpack-plugin)
+
+Workbox provides two webpack plugins: one that generates a complete service worker for you and one that generates a list of assets to precache that is injected into a service worker file.
+
+The plugins are implemented as two classes in the `workbox-webpack-plugin` module, named `GenerateSW` and `InjectManifest`. The answers to the following questions can help you choose the right plugin and configuration to use.
+
+用于在webpack中使用PWA
+
+#### 安装
+
+```bash
+npm install workbox-webpack-plugin -D
+```
+
+#### 使用
+
+```js
+const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
+module.exports = {
+	plugins: [
+	new WorkboxWebpackPlugin.GenerateSW({
+		clientsClaim: true,
+		skipWaiting: true
+	})]
+}
+```
+
+#### 测试
+
+先安装http-server
+
+```bash
+npm install http-server -D
+```
+
+输入以启用服务
+
+```bash
+npx http-server dist
+```
+
+于http://localhost:8080/访问该服务
 
 ### clean-webpack-plugin
 
@@ -436,7 +711,7 @@ npm install webpack-dev-server -D
 npx webpack-dev-server
 ```
 
-### 说明
+### 配置说明
 
 devServer.contentBase告诉服务器从哪里提供内容。只有在您想要提供静态文件时才需要这样做
 
@@ -512,15 +787,15 @@ module.exports = {
 node server.js
 ```
 
-## Hot Module Replacement
+### Hot Module Replacement
 
-### 说明
+#### 说明
 
 hot启用webpack的热模块替换功能
 
 hot在没有页面刷新的情况下启用热模块替换（请参阅devServer.hot）作为构建失败时的后备
 
-### 代码
+#### 代码
 
 ```js
 const webpack = require('webpack')
@@ -536,171 +811,58 @@ module.exports = {
 }
 ```
 
-## Babel
+## optimization
 
-[Bebel](https://babeljs.io/setup#installation)是一个工具链，主要用于将ECMAScript 2015+代码转换为当前和旧版浏览器或环境中的向后兼容版本的JavaScript。以下是Babel可以为您做的主要事情：
-
-### 安装
-
-```bash
-npm install --save-dev babel-loader @babel/core
-```
-
-### 代码
-
-```js
-module.exports = {
-    module: {
-      	rules: [
-        { 
-            test: /\.js$/, 
-            exclude: /node_modules/, 
-            loader: "babel-loader" 
-        }]
-    }
-}
-```
-
-在项目目录下新建.babelrc，相当如babel中options的配置项
-
-### preset-set
+### optimize-css-assets-webpack-plugin
 
 #### 说明
 
-[preset-set](https://babeljs.io/docs/en/babel-preset-env)一个转化ES2015+的预设
+一个插件的WebPack优化\压缩CSS文件。
 
 #### 安装
 
 ```bash
-npm install @babel/preset-env --save-dev
-```
-
-#### 代码
-
-并在.babelrc下输入
-
-```js
-{
-  "presets": ["@babel/preset-env"]
-}
-```
-
-在webpack.config.js配置
-
-```js
-module.exports = {
-    module: {
-      	rules: [
-	        { 
-	            test: /\.js$/, 
-	            exclude: /node_modules/, 
-	            loader: "babel-loader",
-	            options: {
-					presets: ["@babel/preset-env"]
-				}
-	        }
-	    ]
-	}
-}
-```
-
-### polyfill
-
-#### 说明
-
-[Polyfill](https://babeljs.io/docs/en/babel-polyfill)是一个`js`库，主要抚平不同浏览器之间对js实现的差异
-
-#### 安装
-
-```bash
-npm install --save @babel/polyfill
-```
-
-#### 使用
-
-在业务代码中进行引入
-
-```js
-import "@babel/polyfill";
-```
-
-#### 问题
-
-引入所有纠正由此带来代码臃肿
-
-#### 解决
-
-在webpack.config.js键入以下内容以根据业务代码加载
-
-```js
-module.exports = {
-    module: {
-      rules: [
-        { 
-            test: /\.js$/, 
-            exclude: /node_modules/, 
-            loader: "babel-loader",
-            options: {
-				presets: [["@babel/preset-env",{
-					useBuiltIns: 'usage'
-				}]]
-			}
-        }]
-    }
-}
-```
-
-#### warning 及 解决
-
-WARNING: We noticed you're using the `useBuiltIns` option without declaring a core-js version. Currently, we assume version 2.x when no version is passed. Since this default version will likely change in future versions of Babel, we recommend explicitly setting the core-js version you are using via the `corejs` option.
-
-```bash
-npm install --save core-js@2
-```
-
-### plugin-transform-runtime
-
-#### 说明
-
-[plugin-transform-runtime](https://babeljs.io/docs/en/babel-plugin-transform-runtime)一个插件，可以重复使用Babel注入的帮助程序代码来节省代码
-
-用于写类库代码而不污染全局变量
-
-#### 安装
-
-```bash
-npm install --save-dev @babel/plugin-transform-runtime
-npm install --save @babel/runtime
-npm install --save @babel/runtime-corejs2
-
+npm install --save-dev optimize-css-assets-webpack-plugin
 ```
 
 #### 使用
 
 ```js
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 module.exports = {
-    module: {
-      rules: [
-        { 
-            test: /\.js$/, 
-            exclude: /node_modules/, 
-            loader: "babel-loader",
-            options: {
-				plugins: [["@babel/plugin-transform-runtime"],{
-                    "corejs": 2,
-                    "helpers": true,
-                    "regenerator": true,
-                    "useESModules": false
-                }]
-			}
-        }]
-    }
+    optimization: {
+        minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+      }
 }
 ```
 
-## Tree shaking
+### UglifyjsWebpackPlugin
 
-### 说明
+#### 说明
+
+这个插件使用uglify-js来缩小你的JavaScript。
+
+#### 安装
+
+```bash
+npm install uglifyjs-webpack-plugin -D
+```
+
+#### 使用
+
+```js
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
+module.exports = {
+  optimization: {
+    minimizer: [new UglifyJsPlugin()],
+  },
+};
+```
+
+### Tree shaking
+
+#### 说明
 
 Tree shaking用于JavaScript上下文中常用于消除死代码
 
@@ -710,7 +872,7 @@ mode: 'production'自带Tree shaking
 
 mode: 'development'需要配置
 
-### 代码
+#### 代码
 
 ```js
 module.exports = {
@@ -729,7 +891,140 @@ package.json 中 sizeEffects 用于免于tree shaking的文件
 }
 ```
 
+### Code Splitting
 
+#### 同步代码分割
+
+需要在webpack.common.js中做optimization的配置
+
+```js
+module.exports = {
+	optimization: {
+		splitChunks: {
+			chunks: 'all'
+		}
+	}
+}
+```
+
+#### 异步代码分割
+
+不需要做任何配置，会自动进行代码分割，但是需要安装babel-plugin-dynamic-import-webpack进行ES6转化
+
+#### babel-plugin-dynamic-import-webpack
+
+##### 说明
+
+非官方
+
+##### 安装
+
+```bash
+npm install babel-plugin-dynamic-import-webpack -D
+```
+
+##### 代码
+
+.babelrc
+
+```json
+{
+	plugins: ["dynamic-import-webpack"]
+}
+```
+
+#### plugin-syntax-dynamic-import
+
+#### 说明
+
+官方
+
+##### 安装
+
+```bash
+npm install --save-dev @babel/plugin-syntax-dynamic-import
+```
+
+##### 代码
+
+```json
+{
+  "plugins": ["@babel/plugin-syntax-dynamic-import"]
+}
+```
+
+#### SplitChunksPlugin
+
+##### 说明
+
+使用前必须安装上述plugin-syntax-dynamic-import
+
+最初，块（以及在其中导入的模块）通过内部webpack图中的父子关系进行连接。CommonsChunkPlugin用于避免跨越它们的重复依赖，但无法进一步优化。
+
+#### 代码
+
+main.js
+
+```js
+function getComponent(){
+	return import(/* webpackChunkName:"lodash" */'lodash').then(({default: _})=>{
+		var element = document.createElement('div');
+		element.innerHTML = _.join(['Dell', 'Lee'], '-');
+		return element
+	})
+}
+getComponent().then(element=>{
+	document.body.appendChild(element);
+})
+```
+
+webpack.common.js，同步的代码会读取到cacheGroups而异步的不会
+
+```js
+module.exports = {
+	optimization: {
+		splitChunks: {
+			chunks: 'all',
+			cacheGroups: {
+				vendors: false,
+				default: false
+			}
+		}
+	}
+}
+```
+
+结果：会在dist目录单独生成lodash.js
+
+配置同步代码和异步代码的加载
+
+```js
+module.exports = {
+	optimization: {
+		splitChunks: {
+			chunks: 'all',
+			minSize: 30000,  // 代码分割最小大小
+			minChunks: 1,
+			maxAsyncRequests: 5,
+			maxInitialRequests: 3,
+			automaticNameDelimiter: '~',
+			name: true,
+			cacheGroups: {
+				// 同步引入
+				vendors: {
+					test: /[\\/]node_modules[\\/]/, // 把node_modules的文件打包到vendors.js中
+					priority: -10,
+				},
+				default: {
+					priority: -20,
+					reuseExistingChunk: true,
+					filename: 'common.js'
+				}
+			}
+		}
+	}
+}
+```
 
 ## 区分development和production打包
 
@@ -816,7 +1111,7 @@ module.exports = {
 }
 ```
 
-#### webpaack.dev.js
+#### webpack.dev.js
 
 ```js
 const webpack = require('webpack')
@@ -868,6 +1163,8 @@ module.exports = merge(commonConfig, prodConfig)
 
 ### npm script
 
+#### dev && build
+
 package.json中
 
 ```json
@@ -879,144 +1176,9 @@ package.json中
 }
 ```
 
-## Code Splitting
+#### analyse
 
-### 同步代码分割
-
-需要在webpack.common.js中做optimization的配置
-
-```js
-module.exports = {
-	optimization: {
-		splitChunks: {
-			chunks: 'all'
-		}
-	}
-}
-```
-
-### 异步代码分割
-
-不需要做任何配置，会自动进行代码分割，但是需要安装babel-plugin-dynamic-import-webpack进行ES6转化
-
-### babel-plugin-dynamic-import-webpack
-
-#### 说明
-
-非官方
-
-#### 安装
-
-```bash
-npm install babel-plugin-dynamic-import-webpack -D
-```
-
-#### 代码
-
-.babelrc
-
-```json
-{
-	plugins: ["dynamic-import-webpack"]
-}
-```
-
-### plugin-syntax-dynamic-import
-
-#### 说明
-
-官方
-
-#### 安装
-
-```bash
-npm install --save-dev @babel/plugin-syntax-dynamic-import
-```
-
-####  代码
-
-```json
-{
-  "plugins": ["@babel/plugin-syntax-dynamic-import"]
-}
-```
-
-### SplitChunksPlugin
-
-#### 说明
-
-使用前必须安装上述plugin-syntax-dynamic-import
-
-最初，块（以及在其中导入的模块）通过内部webpack图中的父子关系进行连接。CommonsChunkPlugin用于避免跨越它们的重复依赖，但无法进一步优化。
-
-#### 代码
-
-main.js
-
-```js
-function getComponent(){
-	return import(/* webpackChunkName:"lodash" */'lodash').then(({default: _})=>{
-		var element = document.createElement('div');
-		element.innerHTML = _.join(['Dell', 'Lee'], '-');
-		return element
-	})
-}
-getComponent().then(element=>{
-	document.body.appendChild(element);
-})
-```
-
-webpack.common.js，同步的代码会读取到cacheGroups而异步的不会
-
-```js
-module.exports = {
-	optimization: {
-		splitChunks: {
-			chunks: 'all',
-			cacheGroups: {
-				vendors: false,
-				default: false
-			}
-		}
-	}
-}
-```
-
-结果：会在dist目录单独生成lodash.js
-
-配置同步代码和异步代码的加载
-
-```js
-module.exports = {
-	optimization: {
-		splitChunks: {
-			chunks: 'all',
-			minSize: 30000,  // 代码分割最小大小
-			minChunks: 1,
-			maxAsyncRequests: 5,
-			maxInitialRequests: 3,
-			automaticNameDelimiter: '~',
-			name: true,
-			cacheGroups: {
-				// 同步引入
-				vendors: {
-					test: /[\\/]node_modules[\\/]/, // 把node_modules的文件打包到vendors.js中
-					priority: -10,
-				},
-				default: {
-					priority: -20,
-					reuseExistingChunk: true,
-					filename: 'common.js'
-				}
-			}
-		}
-	}
-}
-```
-
-## analyse
-
-### 使用
+##### 使用
 
 [参见官网](https://github.com/webpack/analyse)
 
@@ -1031,195 +1193,6 @@ package.json中加入scripts
 ```
 
 打开[分析网站](http://webpack.github.io/analyse/)或者[webpack-chart](http://alexkuz.github.io/webpack-chart/)，将项目下生成的stat.json文件上传，更多分析工具看[这里](https://webpack.js.org/guides/code-splitting/#bundle-analysis)
-
-## Preloading && Prefetching
-
-### 说明
-
-webpack推荐的一种代码分离异步加载的方式
-
-### 使用
-
-index.js
-
-```js
-document.addEventListener('click', () => {
-	import(/* webpackPrefetch: true*/ './js/click.js').then(({default: func})=>{
-		func();
-	})
-})
-```
-
-click.js
-
-```js
-function handleClick(){
-	const element = document.createElement('div');
-	element.innerHTML = 'Dell Lee';
-	document.body.appendChild(element);
-}
-
-export default handleClick;
-```
-
-## MiniCssExtractPlugin
-
-### 说明
-
-此插件将CSS提取到单独的文件中。它为每个包含CSS的JS文件创建一个CSS文件。它支持CSS和SourceMaps的按需加载。
-
-### 安装
-
-```bash
-npm install --save-dev mini-css-extract-plugin
-```
-
-### 使用
-
-```js
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-module.exports = {
-	module:{
-		rules: [
-		{
-			test: /\.css$/,
-			use: [
-			MiniCssExtractPlugin.loader,
-			'css-loader',
-			'postcss-loader'
-			]
-		},
-		{
-			test: /\.scss$/,
-			use: [
-			MiniCssExtractPlugin.loader,
-			{
-				loader: 'css-loader',
-				options: {
-					importLoaders: 2, 	
-					modules: true
-				},
-			},
-			'postcss-loader',
-			'sass-loader'
-			]
-		}
-		]
-	},
-	plugins: [
-	new MiniCssExtractPlugin({
-		filename: '[name].css',
-		chunkFilename: '[name].chunk.css'
-	})
-	]
-}
-```
-
-防止tree shaking
-
-package.json
-
-```json
-{
-  "sizeEffects": [
-    "*.css"
-  ],
-}
-```
-
-## optimize-css-assets-webpack-plugin
-
-### 说明
-
-一个插件的WebPack优化\压缩CSS文件。
-
-### 安装
-
-```bash
-npm install --save-dev optimize-css-assets-webpack-plugin
-```
-
-### 使用
-
-```js
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-module.exports = {
-    optimization: {
-        minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
-      }
-}
-```
-
-## UglifyjsWebpackPlugin
-
-### 说明
-
-这个插件使用uglify-js来缩小你的JavaScript。
-
-### 安装
-
-```bash
-npm install uglifyjs-webpack-plugin -D
-```
-
-### 使用
-
-```js
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-
-module.exports = {
-  optimization: {
-    minimizer: [new UglifyJsPlugin()],
-  },
-};
-```
-
-## workboxWebpackPlugin
-
-### 说明
-
-[官方文档](https://developers.google.com/web/tools/workbox/modules/workbox-webpack-plugin)
-
-Workbox provides two webpack plugins: one that generates a complete service worker for you and one that generates a list of assets to precache that is injected into a service worker file.
-
-The plugins are implemented as two classes in the `workbox-webpack-plugin` module, named `GenerateSW` and `InjectManifest`. The answers to the following questions can help you choose the right plugin and configuration to use.
-
-用于在webpack中使用PWA
-
-### 安装
-
-```bash
-npm install workbox-webpack-plugin -D
-```
-
-### 使用
-
-```js
-const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
-module.exports = {
-	plugins: [
-	new WorkboxWebpackPlugin.GenerateSW({
-		clientsClaim: true,
-		skipWaiting: true
-	})]
-}
-```
-
-### 测试
-
-先安装http-server
-
-```bash
-npm install http-server -D
-```
-
-输入以启用服务
-
-```bash
-npx http-server dist
-```
-
-于http://localhost:8080/访问该服务
 
 ## Eslint
 
@@ -1256,3 +1229,58 @@ module.exports = {
 }
 ```
 
+### git钩子做eslint
+
+#### 安装
+
+```bash
+npm install husky --save-dev
+```
+
+#### 使用
+
+package.json中
+
+```json
+{
+    "husky": {
+        "hooks": {
+          "pre-commit": "npm run lint-fix"
+        }
+  	}
+}
+```
+
+当执行commit的时候会先执行npm run lint-fix
+
+## 其它
+
+### Preloading && Prefetching
+
+#### 说明
+
+webpack推荐的一种代码分离异步加载的方式
+
+#### 使用
+
+index.js
+
+```js
+document.addEventListener('click', () => {
+	import(/* webpackPrefetch: true*/ './js/click.js').then(({default: func})=>{
+		func();
+	})
+})
+```
+
+click.js
+
+```js
+function handleClick(){
+	const element = document.createElement('div');
+	element.innerHTML = 'Dell Lee';
+	document.body.appendChild(element);
+}
+
+export default handleClick;
+```

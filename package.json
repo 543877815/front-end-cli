@@ -16,7 +16,7 @@
   "eslintIgnore": [],
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint-fix",
+      "pre-commit": "npm run lint-fix"
     }
   },
   "author": "",

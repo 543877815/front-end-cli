@@ -91,4 +91,5 @@ if ("serviceWorker" in navigator){
 	})
 }
 
-var a = 1
+let b = 1
+console.log(b)
