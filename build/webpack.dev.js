@@ -37,7 +37,7 @@ const devConfig =  {
 		contentBase: './dist',
 		overlay: true,
 		open: true,
-		port: 8080,
+		port: 8000,
 		hot: true,
 		proxy: {
 			'/api': {
